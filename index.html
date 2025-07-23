@@ -141,7 +141,6 @@
   <!-- Background Canvas -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script>
-    // === THREE.js Mesh ===
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.set(0, 8, 50);
@@ -179,7 +178,6 @@
     const mesh = new THREE.LineSegments(geometry, material);
     scene.add(mesh);
 
-    // Animation
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
@@ -196,7 +194,6 @@
 
       pos.needsUpdate = true;
 
-      // Cycle hue
       const hue = (t * 10) % 360;
       const rgb = hslToRgb(hue / 360, 1, 0.5);
       material.color.setRGB(rgb[0], rgb[1], rgb[2]);
@@ -232,7 +229,6 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // === Language Toggle ===
     function setLanguage(lang) {
       const content = {
         en: {
@@ -247,9 +243,9 @@
           title: "Maximilian Hackl",
           subtitle: "Live-VJ-Gitter-Visualizer",
           section1Title: "Über das Projekt",
-          section1Body: "Diese visuelle Darstellung basiert auf einem Echtzeit-OpenGL-VJing-Tool. Die Web-Version nutzt Three.js und emuliert ein wellenartiges, animiertes Gitter in moderner Webtechnologie.",
+          section1Body: "Eine Hommage an frühe elektronische Klangkunst. Diese visuelle Komposition übersetzt Signalflüsse, Wellenlängen und modulierte Amplituden in ein abstrahiertes Gitterfeld – inspiriert von Oszilloskopen, analogem Synthesizer-Design und der Ästhetik minimalistisch strukturierter Frequenzräume. Reduktion, Wiederholung, Transformation: Die Web-Version emuliert eine rhythmisch atmende Struktur – ein digitales Instrument zur Visualisierung von Bewegung im Raum.",
           section2Title: "Code & Intention",
-          section2Body: "Quellcode und technische Hintergründe findest du auf GitHub. Die OpenGL-Version verwendet PyOpenGL, FFT-basierte Audioanalyse und ein Kontrollpanel zur Live-Steuerung."
+          section2Body: "Das zugrundeliegende System basiert auf einer OpenGL-Architektur für Live-Visualisierung – gesteuert durch Frequenzanalyse und zeitbasierte Wellensimulation. Die Webumsetzung in Three.js ermöglicht einen immersiven Zugang über den Browser. Der vollständige Quellcode ist auf GitHub verfügbar – offen für Interpretation, Modifikation und Erweiterung im Geist modularer Klang- und Bildsysteme."
         }
       };
 
