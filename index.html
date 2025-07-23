@@ -4,20 +4,13 @@
   <meta charset="UTF-8">
   <title>Maximilian Hackl – VJ Visualizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Inter Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #0a0a0a;
-      color: #ffffff;
+      background: transparent;
       font-family: 'Inter', sans-serif;
+      color: white;
       overflow-x: hidden;
     }
 
@@ -26,6 +19,8 @@
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       z-index: -1;
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     .hero {
@@ -35,124 +30,106 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 0 20px;
     }
 
     .title {
-      font-size: 3.2em;
-      font-weight: 700;
-      letter-spacing: 0.02em;
+      font-size: 3em;
+      font-weight: bold;
+      text-shadow: 0 0 10px #000;
     }
 
     .subtitle {
-      font-size: 1.1em;
-      font-weight: 300;
-      color: #cccccc;
-      margin-top: 0.5em;
+      font-size: 1.2em;
+      color: #ccc;
+      text-shadow: 0 0 5px #000;
     }
 
     .icons {
-      margin-top: 1.5em;
+      margin-top: 20px;
     }
 
     .icons a {
       color: white;
-      margin: 0 12px;
-      font-size: 1.6em;
-      transition: color 0.3s ease;
+      margin: 0 10px;
+      font-size: 1.5em;
+      text-decoration: none;
+      transition: color 0.3s;
     }
 
     .icons a:hover {
       color: gold;
     }
 
-    .divider {
-      width: 80%;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 40px auto;
-    }
-
     section {
-      max-width: 800px;
+      padding: 80px 20px;
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 60px 20px;
+      position: relative;
+      z-index: 1;
+      background: transparent;
       text-align: center;
     }
 
-    section h2 {
-      font-size: 1.8em;
-      margin-bottom: 0.5em;
-      font-weight: 500;
+    .divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      margin: 40px 10%;
     }
 
-    section p {
-      font-size: 1em;
-      line-height: 1.6em;
-      color: #dddddd;
-    }
-
-    section a {
-      display: inline-block;
-      margin-top: 1em;
-      font-size: 1em;
+    a {
       color: gold;
-      text-decoration: none;
-      transition: opacity 0.3s;
-    }
-
-    section a:hover {
-      opacity: 0.7;
     }
   </style>
+  <!-- Font Awesome für Icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <!-- Hintergrund-Wellen-Mesh -->
+  <canvas id="waveCanvas"></canvas>
 
-  <!-- Hero Section -->
+  <!-- Intro-Section -->
   <div class="hero">
     <div class="title">Maximilian Hackl</div>
     <div class="subtitle">Live VJ Grid Visualizer</div>
     <div class="icons">
-      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="mailto:ga94wux@mytum.de"><i class="fas fa-envelope"></i></a>
+      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+      <a href="mailto:ga94wux@mytum.de" aria-label="E-Mail"><i class="fas fa-envelope"></i></a>
     </div>
   </div>
 
   <div class="divider"></div>
 
-  <!-- Section: About -->
+  <!-- Info -->
   <section>
     <h2>Über das Projekt</h2>
-    <p>
-      Diese visuelle Darstellung basiert auf einem OpenGL-Projekt für Live-VJing. Die hier gezeigte Variante nutzt Three.js und erzeugt ein wellenartiges Drahtgitter in Echtzeit – minimalistisch, responsiv und modern.
-    </p>
+    <p>Diese visuelle Darstellung basiert auf einer OpenGL-Version für Echtzeit-VJing. Die Web-Version nutzt Three.js und emuliert ein wellenartiges, animiertes Gitter als modernen Hintergrundeffekt.</p>
   </section>
 
   <div class="divider"></div>
 
-  <!-- Section: Code -->
+  <!-- GitHub-Link -->
   <section>
-    <h2>Code & Interaktion</h2>
-    <p>
-      Der Quellcode ist öffentlich auf GitHub verfügbar. Die Originalversion nutzt PyOpenGL, eine FFT-basierte Audioanalyse und ein Kontrollpanel zur Live-Steuerung – alles optimiert für kreative Visuals.
-    </p>
-    <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 Zum GitHub-Repository</a>
+    <h2>Code & Intention</h2>
+    <p>Der Quellcode ist verfügbar auf GitHub unter der MIT-Lizenz. Entwickelt von Maximilian Hackl, VJ/IT-Ingenieur.<br>
+    Enthält eine Audioanalyse (FFT) und Steuerung per GUI in der OpenGL-Version.</p>
+    <p><a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 Zum GitHub-Repository</a></p>
   </section>
 
-  <!-- Three.js -->
+  <!-- THREE.js Background Script -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script>
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 8, 50);
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('waveCanvas'), antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
 
+    // Mesh-Parameter
     const gridSize = 30, spacing = 1.0;
     const amplitude = 3.0, frequency = 1.0, speed = 2.0;
+
     const geometry = new THREE.BufferGeometry();
     const positions = [], indices = [];
 
@@ -174,16 +151,22 @@
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.setIndex(indices);
 
-    const material = new THREE.LineBasicMaterial({ color: 0xffcc00 }); // gold
+    const material = new THREE.LineBasicMaterial({ color: 0xffff00 });
     const mesh = new THREE.LineSegments(geometry, material);
     scene.add(mesh);
 
     const clock = new THREE.Clock();
+
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime() * speed;
-      const pos = geometry.attributes.position;
 
+      // Farbverlauf
+      const hue = (t * 10) % 360;
+      const color = new THREE.Color(`hsl(${hue}, 100%, 50%)`);
+      material.color = color;
+
+      const pos = geometry.attributes.position;
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
         const z = pos.getZ(i);
@@ -198,6 +181,7 @@
 
     animate();
 
+    // Resize
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
