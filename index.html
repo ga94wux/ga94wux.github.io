@@ -1,137 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>VJ Grid Wave</title>
+  <meta charset="UTF-8">
+  <title>Maximilian Hackl – VJ Visualizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
   <style>
     html, body {
       margin: 0;
-      overflow: hidden;
+      padding: 0;
       background: #0a0a0a;
+      color: #ffffff;
       font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
     }
 
     canvas {
       position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 0;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: -1;
     }
 
-    .overlay {
-      position: relative;
-      z-index: 1;
-      color: white;
-      padding: 2rem;
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 0 20px;
     }
 
     .title {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-bottom: 1rem;
+      font-size: 3.2em;
+      font-weight: 700;
+      letter-spacing: 0.02em;
     }
 
     .subtitle {
-      font-size: 1rem;
-      opacity: 0.7;
+      font-size: 1.1em;
+      font-weight: 300;
+      color: #cccccc;
+      margin-top: 0.5em;
     }
 
-    .separator {
-      border-top: 1px solid white;
-      margin: 2rem 0;
-      opacity: 0.3;
+    .icons {
+      margin-top: 1.5em;
     }
 
-    a {
+    .icons a {
       color: white;
-      text-decoration: none;
+      margin: 0 12px;
+      font-size: 1.6em;
+      transition: color 0.3s ease;
     }
 
-    a:hover {
-      text-decoration: underline;
+    .icons a:hover {
+      color: gold;
+    }
+
+    .divider {
+      width: 80%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 40px auto;
+    }
+
+    section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    section h2 {
+      font-size: 1.8em;
+      margin-bottom: 0.5em;
+      font-weight: 500;
+    }
+
+    section p {
+      font-size: 1em;
+      line-height: 1.6em;
+      color: #dddddd;
+    }
+
+    section a {
+      display: inline-block;
+      margin-top: 1em;
+      font-size: 1em;
+      color: gold;
+      text-decoration: none;
+      transition: opacity 0.3s;
+    }
+
+    section a:hover {
+      opacity: 0.7;
     }
   </style>
 </head>
 <body>
 
-<div class="overlay">
-  <div class="title">Maximilian Hackl</div>
-  <div class="subtitle">Realtime VJ Wave Grid Visualizer</div>
-  <div class="separator"></div>
-  <p><a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 GitHub Repository</a></p>
-</div>
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="title">Maximilian Hackl</div>
+    <div class="subtitle">Live VJ Grid Visualizer</div>
+    <div class="icons">
+      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="mailto:ga94wux@mytum.de"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-<script>
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
-  camera.position.set(0, 10, 50);
-  camera.lookAt(0, 0, 0);
+  <div class="divider"></div>
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  <!-- Section: About -->
+  <section>
+    <h2>Über das Projekt</h2>
+    <p>
+      Diese visuelle Darstellung basiert auf einem OpenGL-Projekt für Live-VJing. Die hier gezeigte Variante nutzt Three.js und erzeugt ein wellenartiges Drahtgitter in Echtzeit – minimalistisch, responsiv und modern.
+    </p>
+  </section>
 
-  const gridSize = 30;
-  const spacing = 1.0;
-  const amplitude = 2.5;
-  const frequency = 1.0;
-  const speed = 2.0;
+  <div class="divider"></div>
 
-  const vertices = [];
-  const indices = [];
+  <!-- Section: Code -->
+  <section>
+    <h2>Code & Interaktion</h2>
+    <p>
+      Der Quellcode ist öffentlich auf GitHub verfügbar. Die Originalversion nutzt PyOpenGL, eine FFT-basierte Audioanalyse und ein Kontrollpanel zur Live-Steuerung – alles optimiert für kreative Visuals.
+    </p>
+    <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 Zum GitHub-Repository</a>
+  </section>
 
-  for (let i = 0; i < gridSize; i++) {
-    for (let j = 0; j < gridSize; j++) {
-      const x = (i - gridSize / 2) * spacing;
-      const z = (j - gridSize / 2) * spacing;
-      vertices.push(x, 0, z);
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 8, 50);
+    camera.lookAt(0, 0, 0);
 
-      if (i < gridSize - 1) {
-        indices.push(i * gridSize + j, (i + 1) * gridSize + j);
-      }
-      if (j < gridSize - 1) {
-        indices.push(i * gridSize + j, i * gridSize + (j + 1));
-      }
-    }
-  }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-  geometry.setIndex(indices);
-
-  const material = new THREE.LineBasicMaterial({ color: 0xffcc00 });
-  const grid = new THREE.LineSegments(geometry, material);
-  scene.add(grid);
-
-  const clock = new THREE.Clock();
-
-  function animate() {
-    requestAnimationFrame(animate);
-    const t = clock.getElapsedTime() * speed;
-
-    const pos = geometry.attributes.position;
-    for (let i = 0; i < pos.count; i++) {
-      const x = pos.getX(i);
-      const z = pos.getZ(i);
-      const dist = Math.sqrt(x * x + z * z);
-      const y = amplitude * Math.sin(frequency * dist - t);
-      pos.setY(i, y);
-    }
-
-    pos.needsUpdate = true;
-    renderer.render(scene, camera);
-  }
-
-  animate();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-</script>
+    document.body.appendChild(renderer.domElement);
 
+    const gridSize = 30, spacing = 1.0;
+    const amplitude = 3.0, frequency = 1.0, speed = 2.0;
+    const geometry = new THREE.BufferGeometry();
+    const positions = [], indices = [];
+
+    for (let i = 0; i < gridSize; i++) {
+      for (let j = 0; j < gridSize; j++) {
+        const x = (i - gridSize / 2) * spacing;
+        const z = (j - gridSize / 2) * spacing;
+        positions.push(x, 0, z);
+      }
+    }
+
+    for (let i = 0; i < gridSize - 1; i++) {
+      for (let j = 0; j < gridSize - 1; j++) {
+        const a = i * gridSize + j;
+        indices.push(a, a + 1, a, a + gridSize);
+      }
+    }
+
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setIndex(indices);
+
+    const material = new THREE.LineBasicMaterial({ color: 0xffcc00 }); // gold
+    const mesh = new THREE.LineSegments(geometry, material);
+    scene.add(mesh);
+
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime() * speed;
+      const pos = geometry.attributes.position;
+
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const dist = Math.sqrt(x * x + z * z);
+        const y = amplitude * Math.sin(frequency * dist - t);
+        pos.setY(i, y);
+      }
+
+      pos.needsUpdate = true;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
 </body>
 </html>
