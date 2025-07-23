@@ -1,53 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Maximilian Hackl – VJ Visualizer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background: #000;
-      color: white;
+      background: transparent;
       font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
+      color: white;
+    }
+
+    body {
+      background-color: rgba(0, 0, 0, 0.9);
     }
 
     canvas {
+      display: block;
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    main {
-      position: relative;
-      z-index: 1;
+      z-index: -1;
+      background: transparent;
     }
 
     .hero {
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 60px 20px;
+      position: relative;
     }
 
     .title {
       font-size: 3em;
       font-weight: bold;
+      margin-bottom: 10px;
     }
 
     .subtitle {
       font-size: 1.2em;
-      color: #cccccc;
-      margin-top: 0.5em;
+      color: #ccc;
     }
 
     .icons {
@@ -66,6 +65,12 @@
       color: gold;
     }
 
+    .divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 10%;
+    }
+
     section {
       padding: 80px 20px;
       max-width: 1000px;
@@ -73,62 +78,82 @@
       text-align: center;
     }
 
-    .divider {
-      height: 1px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 0 10%;
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .lang-toggle button {
+      background: none;
+      border: 1px solid white;
+      color: white;
+      padding: 5px 10px;
+      margin-left: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background 0.2s;
+    }
+
+    .lang-toggle button:hover {
+      background: white;
+      color: black;
     }
   </style>
+
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <!-- Language Toggle -->
+  <div class="lang-toggle">
+    <button onclick="setLanguage('en')">EN</button>
+    <button onclick="setLanguage('de')">DE</button>
+  </div>
 
-  <!-- Canvas Background -->
-  <canvas id="waveCanvas"></canvas>
-
-  <!-- Main Content -->
-  <main>
-    <div class="hero">
-      <div class="title">Maximilian Hackl</div>
-      <div class="subtitle">Live VJ Grid Visualizer</div>
-      <div class="icons">
-        <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank"><i class="fab fa-github"></i></a>
-        <a href="mailto:ga94wux@mytum.de"><i class="fas fa-envelope"></i></a>
-      </div>
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="title" id="title">Maximilian Hackl</div>
+    <div class="subtitle" id="subtitle">Live VJ Grid Visualizer</div>
+    <div class="icons">
+      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="mailto:ga94wux@mytum.de"><i class="fas fa-envelope"></i></a>
     </div>
+  </div>
 
-    <div class="divider"></div>
-    <section>
-      <h2>Über das Projekt</h2>
-      <p>Diese visuelle Darstellung basiert auf einer OpenGL-Version für Echtzeit-VJing. Die Version auf dieser Website nutzt Three.js und emuliert ein wellenartiges, animiertes Gitter in moderner Webtechnologie.</p>
-    </section>
+  <div class="divider"></div>
 
-    <div class="divider"></div>
-    <section>
-      <h2>Interaktion & Code</h2>
-      <p>Weitere Informationen und Quellcode findest du auf GitHub. Die OpenGL-Version nutzt PyOpenGL, FFT-basierte Audioanalyse und ein Kontrollpanel für Echtzeitsteuerung.</p>
-      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 Zum GitHub-Repository</a>
-    </section>
-  </main>
+  <!-- Section 1 -->
+  <section>
+    <h2 id="section1-title">About the Project</h2>
+    <p id="section1-body">This visual rendering is based on a real-time OpenGL VJing tool. The web version uses Three.js and emulates a wave-like animated grid in modern web technology.</p>
+  </section>
 
-  <!-- Three.js Mesh -->
+  <div class="divider"></div>
+
+  <!-- Section 2 -->
+  <section>
+    <h2 id="section2-title">Code & Intention</h2>
+    <p id="section2-body">Find source code and technical background on GitHub. The OpenGL version uses PyOpenGL, FFT-based audio analysis, and a control panel for live interaction.</p>
+    <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 GitHub Repository</a>
+  </section>
+
+  <!-- Background Canvas -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script>
+    // === THREE.js Mesh ===
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.set(0, 8, 50);
     camera.lookAt(0, 0, 0);
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas: document.getElementById('waveCanvas'),
-      antialias: true,
-      alpha: false
-    });
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000);
+    document.body.appendChild(renderer.domElement);
 
     const gridSize = 30, spacing = 1.0;
     const amplitude = 3.0, frequency = 1.0, speed = 2.0;
+
     const geometry = new THREE.BufferGeometry();
     const positions = [], indices = [];
 
@@ -154,13 +179,13 @@
     const mesh = new THREE.LineSegments(geometry, material);
     scene.add(mesh);
 
+    // Animation
     const clock = new THREE.Clock();
-
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime() * speed;
-
       const pos = geometry.attributes.position;
+
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
         const z = pos.getZ(i);
@@ -168,47 +193,74 @@
         const y = amplitude * Math.sin(frequency * dist - t);
         pos.setY(i, y);
       }
+
       pos.needsUpdate = true;
 
+      // Cycle hue
       const hue = (t * 10) % 360;
       const rgb = hslToRgb(hue / 360, 1, 0.5);
       material.color.setRGB(rgb[0], rgb[1], rgb[2]);
 
       renderer.render(scene, camera);
     }
+    animate();
 
     function hslToRgb(h, s, l) {
       let r, g, b;
-
-      if (s === 0) {
-        r = g = b = l;
-      } else {
+      if (s == 0) { r = g = b = l; }
+      else {
         const hue2rgb = (p, q, t) => {
           if (t < 0) t += 1;
           if (t > 1) t -= 1;
-          if (t < 1 / 6) return p + (q - p) * 6 * t;
-          if (t < 1 / 2) return q;
-          if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+          if (t < 1/6) return p + (q - p) * 6 * t;
+          if (t < 1/2) return q;
+          if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
           return p;
         };
-
         const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
         const p = 2 * l - q;
-        r = hue2rgb(p, q, h + 1 / 3);
+        r = hue2rgb(p, q, h + 1/3);
         g = hue2rgb(p, q, h);
-        b = hue2rgb(p, q, h - 1 / 3);
+        b = hue2rgb(p, q, h - 1/3);
       }
-
       return [r, g, b];
     }
-
-    animate();
 
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
+
+    // === Language Toggle ===
+    function setLanguage(lang) {
+      const content = {
+        en: {
+          title: "Maximilian Hackl",
+          subtitle: "Live VJ Grid Visualizer",
+          section1Title: "About the Project",
+          section1Body: "This visual rendering is based on a real-time OpenGL VJing tool. The web version uses Three.js and emulates a wave-like animated grid in modern web technology.",
+          section2Title: "Code & Intention",
+          section2Body: "Find source code and technical background on GitHub. The OpenGL version uses PyOpenGL, FFT-based audio analysis, and a control panel for live interaction."
+        },
+        de: {
+          title: "Maximilian Hackl",
+          subtitle: "Live-VJ-Gitter-Visualizer",
+          section1Title: "Über das Projekt",
+          section1Body: "Diese visuelle Darstellung basiert auf einem Echtzeit-OpenGL-VJing-Tool. Die Web-Version nutzt Three.js und emuliert ein wellenartiges, animiertes Gitter in moderner Webtechnologie.",
+          section2Title: "Code & Intention",
+          section2Body: "Quellcode und technische Hintergründe findest du auf GitHub. Die OpenGL-Version verwendet PyOpenGL, FFT-basierte Audioanalyse und ein Kontrollpanel zur Live-Steuerung."
+        }
+      };
+
+      const t = content[lang];
+      document.getElementById('title').innerText = t.title;
+      document.getElementById('subtitle').innerText = t.subtitle;
+      document.getElementById('section1-title').innerText = t.section1Title;
+      document.getElementById('section1-body').innerText = t.section1Body;
+      document.getElementById('section2-title').innerText = t.section2Title;
+      document.getElementById('section2-body').innerText = t.section2Body;
+    }
   </script>
 </body>
 </html>
