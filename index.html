@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VJ Grid Visualizer</title>
+  <style>
+    body { margin: 0; overflow: hidden; background: #0a0a0a; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <!-- Three.js von CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <script>
+    let scene = new THREE.Scene();
+    let camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 15, 40);
+    camera.lookAt(0, 0, 0);
+
+    let renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    // Grid-Parameter
+    const rows = 50, cols = 50;
+    const spacing = 1.0;
+    const geometry = new THREE.PlaneGeometry(
+      cols * spacing, rows * spacing,
+      cols - 1, rows - 1
+    );
+    geometry.rotateX(-Math.PI / 2); // horizontales Grid
+
+    // Material mit Vertex Colors
+    const material = new THREE.MeshBasicMaterial({ vertexColors: true, wireframe: true });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    // Farben initialisieren
+    const colors = [];
+    const color = new THREE.Color();
+    for (let i = 0; i < geometry.attributes.position.count; i++) {
+      color.setHSL(i / geometry.attributes.position.count, 1.0, 0.5);
+      colors.push(color.r, color.g, color.b);
+    }
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+    // Animation
+    let clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      let t = clock.getElapsedTime();
+
+      // Wellenbewegung + Farbänderung
+      const pos = geometry.attributes.position;
+      const col = geometry.attributes.color;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const z = pos.getZ(i);
+        const y = 0.6 * Math.sin(0.15 * x + 0.1 * z + t * 1.2);
+        pos.setY(i, y);
+
+        // Farbänderung über Zeit
+        const h = (0.5 + 0.2 * Math.sin(t + i * 0.02)) % 1.0;
+        color.setHSL(h, 1.0, 0.5);
+        col.setXYZ(i, color.r, color.g, color.b);
+      }
+
+      pos.needsUpdate = true;
+      col.needsUpdate = true;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
