@@ -14,39 +14,29 @@
       overflow-x: hidden;
     }
 
-    section {
-      padding: 80px 20px;
-      max-width: 1000px;
-      margin: 0 auto;
-      text-align: center;
-      z-index: 1;
-    }
-
-    .divider {
-      height: 1px;
-      background: rgba(255, 255, 255, 0.2);
-      margin: 0 10%;
-    }
-
     canvas {
       position: fixed;
       top: 0;
       left: 0;
-      z-index: 0;
       width: 100vw;
       height: 100vh;
+      z-index: 0;
       pointer-events: none;
     }
 
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
     .hero {
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      z-index: 1;
-      position: relative;
+      padding: 60px 20px;
     }
 
     .title {
@@ -75,6 +65,19 @@
     .icons a:hover {
       color: gold;
     }
+
+    section {
+      padding: 80px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.2);
+      margin: 0 10%;
+    }
   </style>
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
@@ -83,31 +86,32 @@
   <!-- Canvas Background -->
   <canvas id="waveCanvas"></canvas>
 
-  <!-- Hero Section -->
-  <div class="hero">
-    <div class="title">Maximilian Hackl</div>
-    <div class="subtitle">Live VJ Grid Visualizer</div>
-    <div class="icons">
-      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="mailto:ga94wux@mytum.de"><i class="fas fa-envelope"></i></a>
+  <!-- Main Content -->
+  <main>
+    <div class="hero">
+      <div class="title">Maximilian Hackl</div>
+      <div class="subtitle">Live VJ Grid Visualizer</div>
+      <div class="icons">
+        <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="mailto:ga94wux@mytum.de"><i class="fas fa-envelope"></i></a>
+      </div>
     </div>
-  </div>
 
-  <!-- Content Section -->
-  <div class="divider"></div>
-  <section>
-    <h2>Über das Projekt</h2>
-    <p>Diese visuelle Darstellung basiert auf einer OpenGL-Version für Echtzeit-VJing. Die Version auf dieser Website nutzt Three.js und emuliert ein wellenartiges, animiertes Gitter in moderner Webtechnologie.</p>
-  </section>
+    <div class="divider"></div>
+    <section>
+      <h2>Über das Projekt</h2>
+      <p>Diese visuelle Darstellung basiert auf einer OpenGL-Version für Echtzeit-VJing. Die Version auf dieser Website nutzt Three.js und emuliert ein wellenartiges, animiertes Gitter in moderner Webtechnologie.</p>
+    </section>
 
-  <div class="divider"></div>
-  <section>
-    <h2>Interaktion & Code</h2>
-    <p>Weitere Informationen und Quellcode findest du auf GitHub. Die OpenGL-Version nutzt PyOpenGL, FFT-basierte Audioanalyse und ein Kontrollpanel für Echtzeitsteuerung.</p>
-    <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 Zum GitHub-Repository</a>
-  </section>
+    <div class="divider"></div>
+    <section>
+      <h2>Interaktion & Code</h2>
+      <p>Weitere Informationen und Quellcode findest du auf GitHub. Die OpenGL-Version nutzt PyOpenGL, FFT-basierte Audioanalyse und ein Kontrollpanel für Echtzeitsteuerung.</p>
+      <a href="https://github.com/ga94wux/vjing_grid_visualizer" target="_blank">🔗 Zum GitHub-Repository</a>
+    </section>
+  </main>
 
-  <!-- Three.js -->
+  <!-- Three.js Mesh -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script>
     const scene = new THREE.Scene();
@@ -118,12 +122,11 @@
     const renderer = new THREE.WebGLRenderer({
       canvas: document.getElementById('waveCanvas'),
       antialias: true,
-      alpha: false // background NOT transparent
+      alpha: false
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000); // solid black
+    renderer.setClearColor(0x000000);
 
-    // Grid setup
     const gridSize = 30, spacing = 1.0;
     const amplitude = 3.0, frequency = 1.0, speed = 2.0;
     const geometry = new THREE.BufferGeometry();
@@ -147,7 +150,7 @@
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.setIndex(indices);
 
-    const material = new THREE.LineBasicMaterial({ color: 0xffff00 }); // default gold
+    const material = new THREE.LineBasicMaterial({ color: 0xffff00 });
     const mesh = new THREE.LineSegments(geometry, material);
     scene.add(mesh);
 
@@ -157,7 +160,6 @@
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime() * speed;
 
-      // animate vertices
       const pos = geometry.attributes.position;
       for (let i = 0; i < pos.count; i++) {
         const x = pos.getX(i);
@@ -168,7 +170,6 @@
       }
       pos.needsUpdate = true;
 
-      // animate color
       const hue = (t * 10) % 360;
       const rgb = hslToRgb(hue / 360, 1, 0.5);
       material.color.setRGB(rgb[0], rgb[1], rgb[2]);
@@ -176,7 +177,6 @@
       renderer.render(scene, camera);
     }
 
-    // HSL to RGB helper
     function hslToRgb(h, s, l) {
       let r, g, b;
 
